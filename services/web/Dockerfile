@@ -14,6 +14,10 @@ ENV PYTHONUNBUFFERED 1
 # (equivalent to python -u option)
 
 
+# install psycopg2 dependencies
+RUN apk update \
+    && apk add postgresql-dev gcc python3-dev musl-dev
+
 # install dependencies
 RUN pip install --upgrade pip
 COPY ./requirements.txt /usr/src/app/requirements.txt
@@ -21,3 +25,7 @@ RUN pip install -r requirements.txt
 
 # copy project
 COPY . /usr/src/app/
+
+# run entrypoint.sh
+# w8t db up and running before creating db
+ENTRYPOINT ["/usr/src/app/entrypoint.sh"]
