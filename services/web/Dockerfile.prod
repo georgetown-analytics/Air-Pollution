@@ -23,8 +23,8 @@ COPY . /usr/src/app/
 RUN flake8 --ignore=E501,F401 .
 
 # install dependencies
-COPY ./requirements.txt .
-RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.txt
+COPY ./requirements.prod.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requirements.prod.txt
 
 
 #########
@@ -49,7 +49,7 @@ WORKDIR $APP_HOME
 # install dependencies
 RUN apk update && apk add libpq
 COPY --from=builder /usr/src/app/wheels /wheels
-COPY --from=builder /usr/src/app/requirements.txt .
+COPY --from=builder /usr/src/app/requirements.prod.txt .
 RUN pip install --upgrade pip
 RUN pip install --no-cache /wheels/*
 
