@@ -5,6 +5,7 @@ app = Flask(__name__)
 app.config.from_object("project.config.Config")
 db = SQLAlchemy(app)
 
+
 class GroundStation(db.Model):
     __tablename__ = "ground_station"
 
@@ -15,12 +16,12 @@ class GroundStation(db.Model):
     lon = db.Column(db.Float, nullable=False)
     measures = db.relationship('Measure', backref='groundStation', lazy=True)
 
-
     def __init__(self, type, active, lat, lon):
         self.type = type
         self.active = active
         self.lat = lat
         self.lon = lon
+
 
 class Measure(db.Model):
     __tablename__ = "measure"
@@ -30,7 +31,7 @@ class Measure(db.Model):
     value = db.Column(db.Float, unique=False, nullable=False)
     time = db.Column(db.String(37), default=True, nullable=False)
     station_id = db.Column(db.Integer, db.ForeignKey('ground_station.id'))
-    #note; Must use the __tablename__ string to set foreign key
+    # note; Must use the __tablename__ string to set foreign key
 
     def __init__(self, type, value, time, station_id):
         self.type = type
