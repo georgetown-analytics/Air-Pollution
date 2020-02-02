@@ -1,0 +1,78 @@
+Air-Pollution
+
+Cohort 18 Capstone Project for the Certificate of Data Science at Georgetown University School of Continuing Studies.
+
+https://github.com/georgetown-analytics/Air-Pollution
+
+Data Science Certificate - Cohort 18
+Proposal: Air Pollution Prediction.
+---------------------------------------------------------------------------------------------------------------------
+
+Team Members:
+ - James Hinshaw
+ - Ayesha Baig
+ - Adrienne White
+ - Julien Collaer
+ - Jeremy Lykken
+
+Nomination for Coordinator:
+ - Ayesha Baig
+
+Domain Chosen:
+Earth Science
+
+Hypothesis or project topic:
+
+According to NASA “In many developing countries, the absence of surface-based air pollution sensors makes it difficult, and in some cases, impossible to get even a rough estimate of the abundance of a subcategory of airborne particles that epidemiologists suspect contributes to millions of premature deaths each year.”(Dunbar, B. (n.d.) The goal of our project is to create a detailed, realtime model of air pollution over the city of DC.  In addition to being a useful visualization tool, having such a map available opens the potential for new applications, such as a maps application that can route bicyclists around polluted highways or a mobile-app based pollution monitor that shows exactly how much pollution the user has been exposed to.  We will build this model from all of the publically available data sources.
+
+There are two major sources of air pollution data: satellites and ground stations.
+
+Satellites have a very high spatial resolution and can cover a continent quickly, but have a number of drawbacks.  First, they don’t directly measure air pollution, but a related parameter, aerosol optical depth (AOD), which doesn’t directly convert to usable pollution data.  Second, satellites often only get a few frames covering < 30 min of time over any given area. Ground stations are extremely accurate, have a high temporal resolution, but are expensive to maintain and measure pollution only at a single point.   We aim to combine these two data sources with their own strengths and weaknesses into a global model with machine learning.  We will use other globally available features for this prediction.  With the available data sets and tools, we propose a method to extract data from such sources as google maps and traffic and other mediums. These tools will allow us to create a simple request to the website scrape the data and us build a database repository with this data regarding the traffic in the DC city and, consequently, the level of urban air pollution(Rybarczyk, Y., & Zalakeviciute, R. 2017)
+
+The main feature we will be predicting is pm25, the amount of soot < 2.5 μm in the air.  This is a key pollutant to study as soot this small can cross through the lungs into the blood, causing a variety of diseases.  It can also be directly converted to an EPA air quality standard.
+
+
+Potential data sources:
+
+EPA RSIG: https://www.epa.gov/hesc/web-access-rsig-data
+This will be the main API we will use.  This data source has the ability to return both historical and current ground sensor pollution data from every government sensor in the US. We will be cognozantIt also can return historical and current satellite data from multiple satellites, and most importantly to select only a subset of geographical coordinates of satellite data pre-gridded.  If for some reason the EPA changes this, or high volume requests become an issue, satellite data can be accessed in a more inconvenient way via a NASA API. Specifically, MODIS instrument will be our first focus, this instrument can view the entire surface of the Earth every one to two days. MODIS includes 36 spectral bands (0.405–14.385 μm) with spatial resolutions of 0.25, 0.5 and 1 km (https://ladsweb.modaps.eosdis.nasa.gov/missions-and-measurements/products/MCD19A2/). In literacy, this is the most relevant products and in particular the MODIS Multi-Angle Implementation of Atmospheric Correction (MAIAC) https://ladsweb.modaps.eosdis.nasa.gov/missions-and-measurements/modis/MCD19_MAIAC_UG_06-2018.pdf
+
+Open AQ:https://openaq.org/
+OpenAQ is a non-profit organization empowering communities around the globe to clean their air by harmonizing, sharing, and using open-air quality data.
+
+
+PurpleAir:  https://www.purpleair.com/sensorlist
+Data from a network of cheap internet-of-things air pollution detectors.  Less reliable and accurate than official government sensors, but far cheaper and more widely distributed.  The API only allows access to real-time data, but this can be used as data to test our predicted pollution map and give a real-time error estimate to our final predictions.
+
+Needed data sources (our features):
+Weather - wind speed, and humidity (temp and pressure are already part of EPA MODIS data product, as well as elevation)
+NOAA has hourly climate data (temp, pressure, dewpoint) at Reagan airport since 1934, and Dulles since the 70s-
+https://www.ncdc.noaa.gov/cdo-web/
+NREL has 2 km gridded wind speed data for 2007-2013
+https://www.nrel.gov/grid/wind-toolkit.html
+Traffic real-time : http://opentraffic.io/ seems dead / not available, everything else is paid ??
+Land use (ie, road, industrial, residential, park)
+Roads: https://www.openstreetmap.org/# (OSM or OpenStreetMap is the streets Wikipedia, they have an API to retrieve data). They also provide a routing API using OSM street graph network (open and free of use)
+Land use and population rasters: https://www.worldpop.org/  open data initiative classifying population density by 100m squares worldwide and also classifying land-use, data elevation, etc
+Road traffic weight: we can extrapolate from OSM road sizes and or use  https://opendata.dc.gov/datasets/2017-traffic-volume (2017 data)
+Land use data in DC https://opendata.dc.gov/datasets/245179183eee41e08852ff9d5dbd3bcb_4
+Any other parameters?  (temporal data will come for free)
+
+
+
+
+Brief description of the project:
+
+We will import all of the satellite values and ground monitor data into a database (suggestions on type? If GIS vector database my suggestion is to use Postgresql+postGIS extension and for raster/images data maybe just keeping files (tiff) is okay).  We will then fill in the additional geographic parameters into the same database.  Once all of the data is in one place, we will calculate all of the intermediate values needed for our calculations.
+
+In order to get our final data product, we will need to calculate two properties.   The first is predicting the pollutant concentration given satellite data and geographic, temporal, and weather data.  This is necessary so that we can compare our model vs ground stations, and get an output in interpretable values, not arbitrary unit AOD.  When our database is fully set-up, this should be fairly trivial, we will just pull all the satellite data with the associated ground monitor data and other parameters and do regression.
+
+The second property is to calculate satellite data given ground-sensor data and geographic, temporal and weather data.  We want this so that we can fill in the whole map at times when there is no satellite data to go off of.  We will take each pixel of each satellite image, and fit them globally against our parameters and the ground station data.  There are multiple ways to add in the contribution of ground sensor data, but the simplest is probably to use interpolation to create an estimated surface from ground stations that cover the entire area.  Both models can be combined into an app that will give a detailed prediction of air pollution across all of DC.
+
+In addition to the validation performed during our fitting, we can test our final model on real-time data from PurpleAir.  In addition to being good practice, this will allow us to give each realtime prediction its own error estimate.
+
+We plan to use Scikit-learn libraries to perform machine learning, probably linear regression to start.  We plan on testing more sophisticated learning methods if time allows.
+
+Questions or avenues of exploration for the project:
+What is the appropriate way to combine data from multiple ground stations to predict a map?  Many possible algorithms.
+How many features do we need to get good predictive power?
