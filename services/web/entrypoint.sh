@@ -1,4 +1,5 @@
-#!/bin/sh
+#!/bin/bash
+echo "Entering in the dev entrypoint."
 
 #verify that Postgres is up and healthy before creating the database table
 # and running the Flask development server
