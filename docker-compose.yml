@@ -13,13 +13,19 @@ services:
     depends_on:
       - db
   db:
-    image: postgres:12.0-alpine
+    # We use the predefined Postgres image
+    # image: mdillon/postgis:11-alpine
+    # or copying and maaking their build
+    build: ./services/db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
       - POSTGRES_USER=airQuality
       - POSTGRES_PASSWORD=airQuality
       - POSTGRES_DB=airQuality_dev
+    ports:
+      - 5432:5432
+    restart: unless-stopped
 
 volumes:
   postgres_data:
