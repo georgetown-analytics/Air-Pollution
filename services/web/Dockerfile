@@ -16,9 +16,9 @@ ENV PYTHONUNBUFFERED 1
 
 # Install the C compiler tools
 RUN apt-get update -y && \
-  apt-get install build-essential -y
+  apt-get install -y --no-install-recommends apt-utils
 
-RUN apt-get install -y --no-install-recommends apt-utils
+RUN apt-get install build-essential -y
 
 # Install libspatialindex
 WORKDIR /tmp
@@ -35,9 +35,8 @@ RUN wget http://download.osgeo.org/libspatialindex/spatialindex-src-1.8.5.tar.gz
 
 WORKDIR /usr/src/app
 
-# install psycopg2 dependencies
 RUN apt-get update \
-    && apt-get install -y netcat
+    && apt-get install -y netcat libpq-dev
 
 # install dependencies
 RUN pip install --upgrade pip

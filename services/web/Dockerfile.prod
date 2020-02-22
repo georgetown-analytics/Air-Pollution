@@ -3,7 +3,7 @@
 ###########
 
 # pull official base image
-FROM python:3.8.0-alpine as builder
+FROM python:3.6 as builder
 
 # set work directory
 WORKDIR /usr/src/app
@@ -12,13 +12,40 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# install psycopg2 dependencies
-RUN apk update \
-    && apk add postgresql-dev gcc python3-dev musl-dev
+
+# Install the C compiler tools
+RUN apt-get update -y && \
+  apt-get install -y --no-install-recommends apt-utils
+
+RUN apt-get install build-essential -y
+
+# Install libspatialindex
+WORKDIR /tmp
+
+RUN wget http://download.osgeo.org/libspatialindex/spatialindex-src-1.8.5.tar.gz && \
+  tar -xvzf spatialindex-src-1.8.5.tar.gz && \
+  cd spatialindex-src-1.8.5 && \
+  ./configure && \
+  make && \
+  make install && \
+  cd - && \
+  rm -rf spatialindex-src-1.8.5* && \
+  ldconfig
+
+WORKDIR /usr/src/app
+
+RUN apt-get update \
+    && apt-get install -y netcat flake8
+
+# install dependencies
+RUN pip install --upgrade pip
+COPY ./requirements.txt /usr/src/app/requirements.txt
+
+RUN pip install -r requirements.txt
+
 
 # lint
 RUN pip install --upgrade pip
-RUN pip install flake8
 COPY . /usr/src/app/
 RUN flake8 --ignore=E501,F401 .
 
@@ -32,13 +59,13 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requir
 #########
 
 # pull official base image
-FROM python:3.8.0-alpine
+FROM python:3.6
 
 # create directory for the app user
 RUN mkdir -p /home/app
 
 # create the app user
-RUN addgroup -S app && adduser -S app -G app
+RUN addgroup --system app && adduser --system app --ingroup app
 
 # create the appropriate directories
 ENV HOME=/home/app
@@ -47,7 +74,8 @@ RUN mkdir $APP_HOME
 WORKDIR $APP_HOME
 
 # install dependencies
-RUN apk update && apk add libpq
+RUN apt-get update \
+    && apt-get install -y netcat libpq-dev
 COPY --from=builder /usr/src/app/wheels /wheels
 COPY --from=builder /usr/src/app/requirements.prod.txt .
 RUN pip install --upgrade pip
