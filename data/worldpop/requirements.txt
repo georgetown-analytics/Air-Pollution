@@ -1,0 +1,3 @@
+pandas
+git+git://github.com/wpgp/wpgpDownloadPy
+gdal
