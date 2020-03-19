@@ -80,7 +80,7 @@ def load(ftpURL, ftpFilePath):
     ftp = FTP(ftpURL)
     r = ftp.login()
     logging.info('FTP login response: {}'.format(r))
-    relativeFilename = '.' + ftpFilePath
+    relativeFilename = './' + ftpFilePath
     if not os.path.exists(os.path.dirname(relativeFilename)):
         try:
             os.makedirs(os.path.dirname(relativeFilename))
@@ -96,7 +96,7 @@ def load(ftpURL, ftpFilePath):
 
     ftp.quit()
 
-worldpopManifest = "/assets/wpgpDatasets.csv"
+worldpopManifest = "assets/wpgpDatasets.csv"
 worldpopftp = "ftp.worldpop.org.uk"
 
 logging.info('Load last version of worldpop manifest ({} fromm {})'.format(worldpopftp, worldpopManifest))
@@ -104,7 +104,7 @@ load(worldpopftp, worldpopManifest)
 
 
 
-dfManifest=pd.read_csv('.' + worldpopManifest)
+dfManifest=pd.read_csv('./' + worldpopManifest)
 is_USA = dfManifest["ISO3"] == "USA"
 USA_manifest = dfManifest[is_USA]
 
@@ -176,31 +176,32 @@ for Covariate_key, config in config_worldpop.items():
     #import pdb; pdb. set_trace()
     #points_list = [ (355278.165927, 4473095.13829), (355978.319525, 4472871.11636) ] #list of X,Y coordinates
     #value = []
-    updated,created=0,0
-    logging.info("CSV len {} before update".format(len(df_bigtable)))
-    for point in coordinates:
-        col = int((point[0] - xOrigin) / pixelWidth)
-        row = int((yOrigin - point[1] ) / pixelHeight)
-        #print ("{},{}={}".format(row, col, data[row][col]))
-        #value += [data[row][col]]
-        value = data[row][col]
-        filtering=((df_bigtable['fid']==point[2])
-                    & (df_bigtable['date'].str.startswith(date_filter, na=False)))
-        if(date_filter == '2011-'):
-            pass
-            #import pdb; pdb. set_trace()
-        if len(df_bigtable.loc[filtering]) > 0:
-            #update existing rows
-            logging.debug('Updating CSV {} row(s) for coord{}/{} @{}, column {} => {}'.format(len(df_bigtable.loc[filtering]),point[0],point[1],date_filter,column_name,value))
-            df_bigtable.loc[filtering, column_name]=value
-            updated += len(df_bigtable.loc[filtering])
-        else:
-            #add a new row with wildcards*
-            logging.debug('Appending 1 row in CSV for coord{}/{} @{}, column {} => {}'.format(point[0],point[1],date_filter,column_name,value))
-            df_bigtable=df_bigtable.append({'fid':point[2],'x':point[0],'y':point[1],'date':date_filter+'*','24hour':'*'},ignore_index=True)
-            #import pdb; pdb. set_trace()
-            created += 1
-    logging.info("Saving CSV as {}".format(csv_to_update))
-    logging.info("CSV len {}, {} created and {} updated".format(len(df_bigtable),created,updated))
-    df_bigtable.to_csv(csv_to_update, index=False)
+    if False:
+        updated,created=0,0
+        logging.info("CSV len {} before update".format(len(df_bigtable)))
+        for point in coordinates:
+            col = int((point[0] - xOrigin) / pixelWidth)
+            row = int((yOrigin - point[1] ) / pixelHeight)
+            #print ("{},{}={}".format(row, col, data[row][col]))
+            #value += [data[row][col]]
+            value = data[row][col]
+            filtering=((df_bigtable['fid']==point[2])
+                        & (df_bigtable['date'].str.startswith(date_filter, na=False)))
+            if(date_filter == '2011-'):
+                pass
+                #import pdb; pdb. set_trace()
+            if len(df_bigtable.loc[filtering]) > 0:
+                #update existing rows
+                logging.debug('Updating CSV {} row(s) for coord{}/{} @{}, column {} => {}'.format(len(df_bigtable.loc[filtering]),point[0],point[1],date_filter,column_name,value))
+                df_bigtable.loc[filtering, column_name]=value
+                updated += len(df_bigtable.loc[filtering])
+            else:
+                #add a new row with wildcards*
+                logging.debug('Appending 1 row in CSV for coord{}/{} @{}, column {} => {}'.format(point[0],point[1],date_filter,column_name,value))
+                df_bigtable=df_bigtable.append({'fid':point[2],'x':point[0],'y':point[1],'date':date_filter+'*','24hour':'*'},ignore_index=True)
+                #import pdb; pdb. set_trace()
+                created += 1
+        logging.info("Saving CSV as {}".format(csv_to_update))
+        logging.info("CSV len {}, {} created and {} updated".format(len(df_bigtable),created,updated))
+        df_bigtable.to_csv(csv_to_update, index=False)
     #import pdb; pdb. set_trace()
