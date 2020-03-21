@@ -26,7 +26,20 @@ From the ./Air-Pollution/data folder execute the script:
 
 The goal is to add ore rows to the first openAQ data by downloading and apending rows to the previous CSV file (**[CSV_MERGED_FIlENAME]**)
 
+Follow the instructions in this [gist](https://gist.github.com/jflasher/573525aff9a5d8a966e5718272ceb25a) to connect to Amazon Athena. This will allow you to acccess Open AQ's data going back more than 90 days. 
+
+First data load for the DC area is stored on S3 here: s3://openaqpm25dcarea/data_load_DC/Unsaved/2020/03/21/5f0f7603-af35-4673-b7cd-d1685d04fed7.csv
+
+Athena Query:
+```
+SELECT *
+FROM openaq
+WHERE city='Washington-Arlington-Alexandria' or city='WASHINGTON';
+```
+
 @todo
+Figure out minimum date and figure out how to merge, make sure correct locations are covered.
+
 
 3. Worldpop data
 
