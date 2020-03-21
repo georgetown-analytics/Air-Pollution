@@ -1,4 +1,18 @@
 
+"""
+Author julien
+Date 4/13/2020
+Description: First version of a script to achieve first 2 steps of data sciece
+pipeline:
+* data extraction
+* data wrangling
+In order to make it possible in a local computer an exeption has been made add
+the extracted data is clipped around DC reducing from 20Gb to 10Mb without
+altering the DC area data.
+In this first version a full DC metro area was used as template
+to cover all 25k pixels or coordinates with a 1km resolution in DC
+We may coming back to this later.
+"""
 config_worldpop = {
 #'ppp_2010':{'column':'Population', 'date':'2010-*', '24hour':'*'},
 #'ppp_2011':{'column':'Population', 'date':'2011-*', '24hour':'*'},
@@ -55,6 +69,9 @@ import os
 from gdalconst import GA_ReadOnly
 from ftplib import FTP
 import os
+from wpgpDownload.utils.convenience_functions import refresh_csv
+#has to been done before importing Products
+refresh_csv()
 from wpgpDownload.utils.wpcsv import Product
 #from wpgpDownload.utils.wpcsv import ISO_LIST
 import logging
@@ -68,9 +85,14 @@ logging.basicConfig(filename='import-data.log',
 logging.info('Starting an import job for WorlPop data')
 logging.info('OS current directory {}'.format(os.getcwd()))
 
+
 iso_country = 'USA'
 USA_products = Product(iso_country)  # Where instead of GRC it could be any valid ISO code.
+USA_manifest = pd.DataFrame(USA_products, columns = ['idx', 'dataset_name', 'path',
+                                            'numeric', 'alpha3','country_name',
+                                            'description'])
 
+import pdb; pdb.set_trace()
 
 def load(ftpURL, ftpFilePath):
     logging.info('Load FTP fie without auth ({} fromm {})'.format(ftpURL, ftpFilePath))
@@ -94,17 +116,14 @@ def load(ftpURL, ftpFilePath):
 
     ftp.quit()
 
-worldpopManifest = "assets/wpgpDatasets.csv"
+#worldpopManifest = "assets/wpgpDatasets.csv"
 worldpopftp = "ftp.worldpop.org.uk"
 
-logging.info('Load last version of worldpop manifest ({} fromm {})'.format(worldpopftp, worldpopManifest))
-load(worldpopftp, worldpopManifest)
-
-
-
-dfManifest=pd.read_csv('./' + worldpopManifest)
-is_USA = dfManifest["ISO3"] == "USA"
-USA_manifest = dfManifest[is_USA]
+#logging.info('Load last version of worldpop manifest ({} fromm {})'.format(worldpopftp, worldpopManifest))
+#load(worldpopftp, worldpopManifest)
+#dfManifest=pd.read_csv('./' + worldpopManifest)
+#is_USA = dfManifest["ISO3"] == "USA"
+#USA_manifest = dfManifest[is_USA]
 
 csv_to_update = 'bigtable.csv'
 csv_template = '1km_t0.csv'
@@ -174,7 +193,8 @@ for Covariate_key, config in config_worldpop.items():
     #import pdb; pdb. set_trace()
     #points_list = [ (355278.165927, 4473095.13829), (355978.319525, 4472871.11636) ] #list of X,Y coordinates
     #value = []
-    if False:
+    Update_csv=True
+    if Update_csv:
         updated,created=0,0
         logging.info("CSV len {} before update".format(len(df_bigtable)))
         for point in coordinates:
@@ -185,9 +205,6 @@ for Covariate_key, config in config_worldpop.items():
             value = data[row][col]
             filtering=((df_bigtable['fid']==point[2])
                         & (df_bigtable['date'].str.startswith(date_filter, na=False)))
-            if(date_filter == '2011-'):
-                pass
-                #import pdb; pdb. set_trace()
             if len(df_bigtable.loc[filtering]) > 0:
                 #update existing rows
                 logging.debug('Updating CSV {} row(s) for coord{}/{} @{}, column {} => {}'.format(len(df_bigtable.loc[filtering]),point[0],point[1],date_filter,column_name,value))
