@@ -1,0 +1,5 @@
+GIS/
+assets/
+.ipynb_checkpoints/*
+import-data.log
+bigtable.csv
