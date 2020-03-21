@@ -1,4 +1,6 @@
-
+#!/usr/bin/env python
+#DEPRECATED
+#BUT MAY BE USED AGAIN SOON FOR V2 IF WE USE SATELITE FULL COVERAGE DATA
 """
 Author julien
 Date 4/13/2020
