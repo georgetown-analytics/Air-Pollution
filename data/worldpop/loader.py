@@ -207,7 +207,7 @@ def clipDC(bigTiff, DCtiff):
 Download from Worldpop FTP a file given his correct path.
 FTP without authentication (open data)
 """
-def download(ftpURL, ftpFilePat, bigTiff):
+def download(ftpURL, ftpFilePath, bigTiff):
     logging.info('Load FTP file without auth ({} from {})'.format(ftpURL, ftpFilePath))
     logging.info('OS current directory {}'.format(os.getcwd()))
     ftp = FTP(ftpURL)

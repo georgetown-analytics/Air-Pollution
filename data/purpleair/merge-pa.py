@@ -4,6 +4,8 @@ and create a CSV for our datamodel
 """
 
 import os
+import sys
+import argparse
 import pandas as pd
 import logging
 
@@ -15,7 +17,6 @@ logging.basicConfig(filename='import-data.log',
 logging.info('Starting an import job for PurpleAir data')
 logging.info('OS current directory {}'.format(os.getcwd()))
 
-folder = 'sample'
 
 """
 create a list of all relevant primary CSV files from purple Air
@@ -50,15 +51,30 @@ def getFileData(file):
     df["y"] = y
     return df
 
-df=None
 
-for file in buildListFromFiles(folder):
-    file = os.path.join(folder, file)
-    if not isinstance(df, type(None)):
-        logging.info('Merging file {}'.format(file))
-        df = df.append(getFileData(file), ignore_index = True)
-    else:
-        logging.info('Creating with first file {}'.format(file))
-        df = getFileData(file)
+def main(arguments):
+    parser = argparse.ArgumentParser(
+        description=__doc__,
+        formatter_class=argparse.RawDescriptionHelpFormatter)
+    parser.add_argument("--folder", default='purpleair/sample', type=str,
+                        required=False, help="CSV_FOLDER_NAME")
+    parser.add_argument("--csv", default='bigtable.csv', type=str,
+                        required=False, help="CSV_MERGED_FIlENAME")
+    args = parser.parse_args(arguments)
+    CSV_MERGED_FIlENAME = args.csv
+    CSV_FOLDER_NAME = args.folder
+    df=None
+    for file in buildListFromFiles(CSV_FOLDER_NAME):
+        file = os.path.join(CSV_FOLDER_NAME, file)
+        if not isinstance(df, type(None)):
+            logging.info('Merging file {}'.format(file))
+            df = df.append(getFileData(file), ignore_index = True)
+        else:
+            logging.info('Creating with first file {}'.format(file))
+            df = getFileData(file)
 
-df.to_csv("merged.csv", index=False)
+    df.to_csv(CSV_MERGED_FIlENAME, index=False)
+
+if __name__ == '__main__':
+    logging.info('Direct main entry, runing main script')
+    sys.exit(main(sys.argv[1:]))
