@@ -66,8 +66,10 @@ def cyclic(CSV_MERGED_FIlENAME, FORMAT, COLUMN_NAME):
     df['cos_day'] = np.cos(2*np.pi*df.seconds/seconds_in_day)
     df['sin_year'] = np.sin(2*np.pi*df.days/days_in_year)
     df['cos_year'] = np.cos(2*np.pi*df.days/days_in_year)
+    df['date'] = pd.Series(df.time).dt.strftime("%Y-%m-%d")
+    df['24hr'] = pd.Series(df.time).dt.strftime("%I:%M:%S")
     df = df.drop(['time','seconds','days'], axis=1)
-    df.to_csv('test_' + CSV_MERGED_FIlENAME, index=False)
+    df.to_csv(CSV_MERGED_FIlENAME, index=False)
 
 if __name__ == '__main__':
     logging.info('Direct main entry, runing main script')
