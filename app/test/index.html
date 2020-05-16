@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Air Quality Test app</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+       integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+       crossorigin=""/>
+     <!-- Make sure you put this AFTER Leaflet's CSS -->
+     <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+       integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+       crossorigin=""></script>
+
+    <!-- https://stackoverflow.com/questions/17341122/link-and-execute-external-javascript-file-hosted-on-github -->
+	<script src="https://cdn.jsdelivr.net/gh/calvinmetcalf/leaflet-ajax/dist/leaflet.ajax.min.js" crossorigin=""></script>
+
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="   crossorigin="anonymous"></script>
+
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+	<script src="https://kit.fontawesome.com/405c641c6b.js" crossorigin="anonymous"></script>
+
+	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="./lib/MarkerCluster.css" />
+  	<link rel="stylesheet" href="./lib/MarkerCluster.Default.css" />
+  	<link rel="stylesheet" href="./map.css" />
+
+
+  	<script src="./lib/leaflet.markercluster-src.js"></script>
+	<script src="./lib/Leaflet.CheapLayerAt.js"></script>
+
+	<link href="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.css" rel="stylesheet">
+
+	<script src="https://unpkg.com/tableexport.jquery.plugin/tableExport.min.js"></script>
+	<script src="https://unpkg.com/tableexport.jquery.plugin/libs/jsPDF/jspdf.min.js"></script>
+	<script src="https://unpkg.com/tableexport.jquery.plugin/libs/jsPDF-AutoTable/jspdf.plugin.autotable.js"></script>
+	<script src="https://unpkg.com/bootstrap-table@1.15.5/dist/bootstrap-table.min.js"></script>
+	<script src="https://unpkg.com/bootstrap-table@1.15.5/dist/extensions/export/bootstrap-table-export.min.js"></script>
+
+</head>
+<body>
+
+
+<div class="wrapper" id="allPage">
+    <!-- Sidebar -->
+    <nav id="sidebar">
+
+		<div class="alert alert-info" id="filters_info" role="alert">
+		 Just a test app to see capabilities of https://github.com/nok/sklearn-porter
+		</div>
+
+    </nav>
+
+    <!-- Page Content -->
+    <div id="content" class="activeHeight">
+
+		<!-- Modal Table data -->
+		<div class="modal fade bd-example-modal-lg" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+		  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<h5 class="modal-title" id="exampleModalLongTitle"> Raw data</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+				  <span aria-hidden="true">&times;</span>
+				</button>
+			  </div>
+			  <div class="modal-body" id="datatable-body">
+
+					<div id="toolbar-table" class="select">
+					  <select class="form-control">
+						<option value="">Export Basic</option>
+						<option value="all">Export All</option>
+						<option value="selected">Export Selected</option>
+					  </select>
+					</div>
+
+					<table id="datatable"
+						class="table table-sm"
+						data-toggle="table"
+						data-pagination="true"
+						data-search="true"
+						data-toolbar="#toolbar-table"
+						data-show-export="true"
+						data-show-toggle="true"
+						data-show-columns="true"
+						data-show-fullscreen="true"
+					>
+						<thead>
+							<tr>
+								<th data-sortable="true" data-field="ISO_A3">Country</th>
+								<th data-sortable="true" data-field="title">Title</th>
+								<th data-sortable="true" data-field="description">Description</th>
+								<th data-sortable="true" data-field="p1">P1</th>
+								<th data-sortable="true" data-field="p2">P1</th>
+								<th data-sortable="true" data-field="p3">P1</th>
+								<th data-sortable="true" data-field="p4">P1</th>
+							</tr>
+						</thead>
+					</table>
+			  </div>
+			  <div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+			  </div>
+			</div>
+		  </div>
+		</div>
+
+		<!-- Buttons on top of the map -->
+		<div id="button-wrapper">
+			&nbsp;
+			<div class="btn-group">
+				<button type="button" id="sidebarCollapse" class="btn btn-info">
+					<i class="fas fa-align-left"></i>
+					<span>Filters</span>
+				</button>
+			</div>
+			<div class="btn-group">
+				<button type="button" id="dataWindowOpen" class="btn btn-info" data-toggle="modal" data-target="#exampleModalCenter">
+					<i class="fas fa-clipboard-list"></i>
+					<span>Data</span>
+				</button>
+			</div>
+
+			<div class="alert alert-success alert-dismissible fade show" id="loadedAlert" role="alert">
+				<span class="fas fa-info-circle"></span>
+				<strong>Data loaded with success</strong>
+				<br /><div id="loadedMsg"></div>
+				<button type="button" class="close" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+		</div>
+
+		<!-- The full screen map -->
+		<div class='custom-popup' id="map"></div>
+
+	</div>
+
+
+</div>
+
+
+<script src="./map.js"></script>
+<script src="./model.js"></script>
+
+</body>
+</html>
