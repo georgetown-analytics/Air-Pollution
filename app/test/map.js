@@ -83,14 +83,21 @@ $(document).ready(function () {
       var sin_year = Math.sin(2*Math.PI*day_numb/365);
 
       var feature = [popLocation.lat, popLocation.lng, dayoftheweek,
-        sinday, cosday, sin_year, cos_year, $("#temp").val(), $("#cos_wind").val(), $("#sin_wind").val(),
-        $("#wind").val(), $("#DEW").val(), $("#SKY").val(), $("#ATM").val()]
+        sinday, cosday, sin_year, cos_year,
+        parseFloat($("#temp").val()),
+        parseFloat($("#cos_wind").val()),
+        parseFloat($("#sin_wind").val()),
+        parseFloat($("#wind").val()),
+        parseFloat($("#DEW").val()),
+        parseFloat($("#SKY").val()),
+        parseFloat($("#ATM").val())]
+        console.log(feature)
       polluted = myDecisionTreeClassifier.predict(feature);
       contenHTML = contenHTML + "<li>At position (Lat " + popLocation.lat + ', Lng '  + popLocation.lng +  ")</li>";
-      contenHTML = contenHTML + "<li>For tomorrow (day number "+dayoftheweek+" in the week and " + day_numb +  " in the year) at 4 PM</li>";
+      contenHTML = contenHTML + "<li>For tomorrow (day number "+dayoftheweek+" in the week and " + day_numb +  " in the year) at " + hour24 + " H24</li>";
       contenHTML = contenHTML + "<li>With standard weather paramaters NOT PREDICTED (@todo use weather API) </li>";
       contenHTML = contenHTML + "</ul>";
-      contenHTML = contenHTML + "<h3>Tomorrow at 4pm here, air Quality will be <b>" + (polluted ? ' Not Good':'Good') + "</b> [using EAP AQI taxonomy and model with 0.5 recall <a href='https://github.com/georgetown-analytics/Air-Pollution'>here</a>]</dh3>";
+      contenHTML = contenHTML + "<h3>Tomorrow at " + hour24 + " H24 here, air Quality will be <b>" + (polluted ? ' Not Good':'Good') + "</b> [using EAP AQI taxonomy and model with 0.5 recall <a href='https://github.com/georgetown-analytics/Air-Pollution'>here</a>]</dh3>";
       var popup = L.popup({
         maxWidth: "auto"
       })
