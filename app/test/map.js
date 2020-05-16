@@ -70,8 +70,10 @@ $(document).ready(function () {
       var tomorrow = new Date();
       tomorrow.setDate(new Date().getDate()+1);
       var dayoftheweek = tomorrow.getDay();
-      var sinday = -0.866025; //4pm
-      var cosday = -0.500000; //4pm
+      var hour24 = parseFloat($("#hour24").val());
+      var sinday = Math.sin(2*Math.PI*hour24/24.0);
+      var cosday = Math.cos(2*Math.PI*hour24/24.0);
+
       var now = new Date();
       var start = new Date(now.getFullYear(), 0, 0);
       var diff = now - start;
@@ -80,7 +82,9 @@ $(document).ready(function () {
       var cos_year = Math.cos(2*Math.PI*day_numb/365);
       var sin_year = Math.sin(2*Math.PI*day_numb/365);
 
-      var feature = [popLocation.lat, popLocation.lng, dayoftheweek, sinday, cosday, sin_year, cos_year, 20, -0.342020, 9.396926e-01, 4.6, 3.95, 1524.0, 1021.95]
+      var feature = [popLocation.lat, popLocation.lng, dayoftheweek,
+        sinday, cosday, sin_year, cos_year, $("#temp").val(), $("#cos_wind").val(), $("#sin_wind").val(),
+        $("#wind").val(), $("#DEW").val(), $("#SKY").val(), $("#ATM").val()]
       polluted = myDecisionTreeClassifier.predict(feature);
       contenHTML = contenHTML + "<li>At position (Lat " + popLocation.lat + ', Lng '  + popLocation.lng +  ")</li>";
       contenHTML = contenHTML + "<li>For tomorrow (day number "+dayoftheweek+" in the week and " + day_numb +  " in the year) at 4 PM</li>";
