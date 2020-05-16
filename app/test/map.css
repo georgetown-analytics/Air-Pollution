@@ -51,7 +51,7 @@ overflow: auto;
 .custom-popup .leaflet-popup-content-wrapper .custom-title {
 font-size:18px;
 line-height:28px;
-width: 700px;
+width: auto;
 }
 .custom-popup .leaflet-popup-content-wrapper a {
 color:rgba(255,255,255,0.5);
@@ -68,7 +68,7 @@ background: #2c3e50;
 }
 
 .table-popup {
-	width: 740px;
+	width: auto;
 }
 
 .custom-popup .leaflet-popup-content-wrapper .table-success a {
@@ -100,7 +100,7 @@ background: #2c3e50;
 	}
 
 .leaflet-popup-content {
-	width:600px;
+	width:auto;
 }
 
 #button-wrapper {

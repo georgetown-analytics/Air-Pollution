@@ -64,7 +64,7 @@ $(document).ready(function () {
 
   map.on('click', function(e) {
       var popLocation= e.latlng;
-      contenHTML = '<h3>Forecast Air Quality at click position</h3>';
+      contenHTML = '<h3>Forecasted Air Quality for tomorrow</h3>';
       contenHTML = contenHTML + "<ul>";
 
       var tomorrow = new Date();
@@ -91,13 +91,14 @@ $(document).ready(function () {
         parseFloat($("#DEW").val()),
         parseFloat($("#SKY").val()),
         parseFloat($("#ATM").val())]
-        console.log(feature)
+
       polluted = myDecisionTreeClassifier.predict(feature);
       contenHTML = contenHTML + "<li>At position (Lat " + popLocation.lat + ', Lng '  + popLocation.lng +  ")</li>";
-      contenHTML = contenHTML + "<li>For tomorrow (day number "+dayoftheweek+" in the week and " + day_numb +  " in the year) at " + hour24 + " H24</li>";
-      contenHTML = contenHTML + "<li>With standard weather paramaters NOT PREDICTED (@todo use weather API) </li>";
+      contenHTML = contenHTML + "<li>Tomorrow (day weeknumber "+dayoftheweek+" and " + day_numb +  " year number) at " + hour24 + " hour.</li>";
+      contenHTML = contenHTML + "<li>Using weather paramaters from your form (@todo use weather API service) </li>";
       contenHTML = contenHTML + "</ul>";
-      contenHTML = contenHTML + "<h3>Tomorrow at " + hour24 + " H24 here, air Quality will be <b>" + (polluted ? ' Not Good':'Good') + "</b> [using EAP AQI taxonomy and model with 0.5 recall <a href='https://github.com/georgetown-analytics/Air-Pollution'>here</a>]</dh3>";
+      contenHTML = contenHTML + '<div class="alert alert-' + (polluted?"danger":"success") + '" role="alert">Our model predict air Quality to be <b>' + (polluted ? "BAD":"GOOD");
+      contenHTML = contenHTML + '</b> using EPA AQI and DecisionTreeClassifier model with 0.5 recall of predicting badweather. Check our <a style="color:black;text-decoration:underline;" href="https://github.com/georgetown-analytics/Air-Pollution">code</a> for more detail or to improve it.</div>';
       var popup = L.popup({
         maxWidth: "auto"
       })
