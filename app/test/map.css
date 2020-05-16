@@ -1,0 +1,221 @@
+body {
+	padding: 0;
+	margin: 0;
+}
+html, body, #map {
+	height: 100%;
+	width: 100%;
+}
+@import "https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700";
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #fafafa;
+}
+.navbar {
+    padding: 15px 10px;
+    background: #fff;
+    border: none;
+    border-radius: 0;
+    margin-bottom: 40px;
+    box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-btn {
+    box-shadow: none;
+    outline: none !important;
+    border: none;
+}
+
+.line {
+    width: 100%;
+    height: 1px;
+    border-bottom: 1px dashed #ddd;
+    margin: 40px 0;
+}
+
+/*
+* These CSS rules affect the tooltips within maps with the custom-popup
+* class. See the full CSS for all customizable options:
+* https://github.com/mapbox/mapbox.js/blob/001754177f3985c0e6b4a26e3c869b0c66162c99/theme/style.css#L321-L366
+*/
+.custom-popup .leaflet-popup-content-wrapper {
+background:#2c3e50;
+color:#fff;
+font-size:11px;
+line-height:17px;
+max-height: 300px;
+width: 800px;
+overflow: auto;
+}
+
+.custom-popup .leaflet-popup-content-wrapper .custom-title {
+font-size:18px;
+line-height:28px;
+width: 700px;
+}
+.custom-popup .leaflet-popup-content-wrapper a {
+color:rgba(255,255,255,0.5);
+}
+.custom-popup .leaflet-popup-tip-container {
+width:30px;
+height:15px;
+}
+.custom-popup .leaflet-popup-tip {
+border-left:15px solid transparent;
+border-right:15px solid transparent;
+border-top:15px solid #2c3e50;
+background: #2c3e50;
+}
+
+.table-popup {
+	width: 740px;
+}
+
+.custom-popup .leaflet-popup-content-wrapper .table-success a {
+  color:rgba(0,0,0,0.5);
+}
+
+.custom-popup .leaflet-popup-content-wrapper .table-secondary a {
+  color:rgba(0,0,0,0.5);
+}
+.marker-cluster-small {
+	background-color: rgba(161, 206, 120, 0.5);
+	}
+.marker-cluster-small div {
+	background-color: rgba(100, 204, 47, 0.5);
+	}
+
+.marker-cluster-medium {
+	background-color: rgba(181, 226, 140, 0.6);
+	}
+.marker-cluster-medium div {
+	background-color: rgba(110, 204, 57, 0.6);
+	}
+
+.marker-cluster-large {
+	background-color: rgba(191, 246, 150, 0.7);
+	}
+.marker-cluster-large div {
+	background-color: rgba(120, 204, 67, 0.7);
+	}
+
+.leaflet-popup-content {
+	width:600px;
+}
+
+#button-wrapper {
+	position: absolute;
+	z-index: 1000;
+	top: 10px;
+	border: 0px;
+}
+
+.alert {
+  margin: 5px;
+}
+
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+
+.wrapper {
+    display: flex;
+    width: 100%;
+}
+
+#sidebar {
+    width: 380px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 999;
+    background: #fff;
+    color: #7386D5;
+    transition: all 0.3s;
+}
+
+#sidebar.active {
+    margin-left: -380px;
+}
+
+#sidebar .sidebar-header {
+    padding: 10px;
+    background: #fff;
+	color: #7386D5;
+}
+
+
+/* ---------------------------------------------------
+    CONTENT STYLE
+----------------------------------------------------- */
+
+#content {
+    width: calc(100% - 380px);
+    padding: 0px;
+    transition: all 0.3s;
+    position: absolute;
+    top: 0;
+    right: 0;
+	height: calc(100% - 400px);
+	border: 1px solid black;
+}
+
+#content.active {
+    width: 100%;
+}
+
+#content.activeHeight {
+    height: 100%;
+}
+
+#downbar.activeHeight {
+	display: none;
+}
+
+#downbar {
+    width: 100%;
+    position: relative;
+    height: 400px;
+    z-index: 999;
+    background: #fff;
+    color: #7386D5;
+    transition: all 0.3s;
+}
+
+.card-graph-header {
+	display: flex;
+	padding: 2px;
+	padding-top:4px;
+}
+
+.btn-remove-filters {
+	padding:0px;
+	height:30px;
+}
+
+.card-graph-body {
+	padding: 0px;
+	border: 1px;
+}
+/* ---------------------------------------------------
+    MEDIAQUERIES
+----------------------------------------------------- */
+
+@media (max-width: 768px) {
+    #sidebar {
+        margin-left: -380px;
+    }
+    #sidebar.active {
+        margin-left: 0;
+    }
+    #content {
+        width: 100%;
+    }
+    #content.active {
+        width: calc(100% - 380px);
+    }
+    #sidebarCollapse span {
+        display: none;
+    }
+}
