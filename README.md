@@ -6,9 +6,28 @@ The increase in fine particulate matter PM2.5 levels over the last 50 years has 
 Keywords:  PM2.5, Air Quality, Ozone Concentrations, Health, Deep Lungs and Bloodstream, Premature Death.
 
 
+### Data Extract and Data Wrangling :
 
-If gh-pages is open in this repo the app should be available here :
+- /data/ folder Data extraction & wrangling.ipynb centralizes and executes all scripts from /worldpop, /purpleair, /openAQ /weather and /cyclic subfloders.
+
+### Data Exploration, Vizualization, Analysis and model analysis
+
+- /model/ folder, follow ordered notebooks
+
+### App and Final Data Product
+
+- /app/ folder, differents proofs of concept:
+ - flask app in app folder
+ - Streamlit
+ - Tableau
+ - Web Javascript (no server side computation) in /app/test/ subfolder
+
+*Web app prototype hosted on github here:*
+
+[![AirQuality Prototype App](/app/test/airquality-prototype-app.png)](https://collaer.github.io/simplemap/Air-Pollution/app/)
+
+If gh-pages is opened in this repo the app will be available here :
 https://georgetown-analytics.github.io/Air-Pollution/app/test
 
-But another copy avaible here to test :
+A copy avaible and running here:
 https://collaer.github.io/simplemap/Air-Pollution/app/
